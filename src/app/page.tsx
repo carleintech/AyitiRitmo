@@ -1,103 +1,209 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import ParticleBackground from '@/components/shared/ParticleBackground';
+import AudioVisualizer from '@/components/shared/AudioVisualizer';
+import FeatureCard from '@/components/shared/FeatureCard';
+import { ROUTES } from '@/lib/utils';
+import { FeatureCard as FeatureCardType } from '@/types';
+
+const features: FeatureCardType[] = [
+  {
+    title: 'Discover',
+    description: 'Experience authentic Haitian rhythms',
+    icon: 'play',
+    gradient: 'bg-gradient-to-br from-haiti-red via-purple-500 to-haiti-blue',
+    href: ROUTES.EXPLORE,
+  },
+  {
+    title: 'Connect',
+    description: 'Join our vibrant music community',
+    icon: 'heart',
+    gradient: 'bg-gradient-to-br from-haiti-red via-orange-500 to-haiti-gold',
+    href: ROUTES.DASHBOARD,
+  },
+  {
+    title: 'Create',
+    description: 'Support and empower Haitian artists',
+    icon: 'music',
+    gradient: 'bg-gradient-to-br from-haiti-blue via-purple-600 to-neon-pink',
+    href: ROUTES.ARTIST,
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    const playAudio = async () => {
+      try {
+        await audioRef.current?.play();
+        setIsPlaying(true);
+      } catch {
+        console.log('Auto-play failed. User interaction required.');
+      }
+    };
+
+    const timer = setTimeout(playAudio, 500);
+    return () => {
+      clearTimeout(timer);
+      audioRef.current?.pause();
+    };
+  }, []);
+
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
+    isPlaying ? audioRef.current.pause() : audioRef.current.play();
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <main className="relative min-h-screen bg-gradient-to-b from-slate-900 via-navy-900 to-slate-800 overflow-hidden flex flex-col">
+      {/* Background Effects */}
+      <ParticleBackground />
+
+      {/* Background Audio */}
+      <audio ref={audioRef} loop src="/sounds/haitian-beat.mp3" className="hidden" />
+
+      {/* Main Page Content */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        {/* Header */}
+        <motion.header
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="pt-10 pb-6 text-center"
+        >
+          <motion.div
+            initial={{ scale: 0.5 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.8, type: 'spring', bounce: 0.4 }}
+            className="relative mx-auto mb-6"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="relative w-32 h-32 mx-auto">
+              <Image
+                src="/images/logo.png"
+                alt="AyitiRitmo Logo"
+                fill
+                className="object-contain animate-pulse-neon"
+                priority
+              />
+            </div>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="text-4xl md:text-6xl font-bold mb-2"
           >
-            Read our docs
-          </a>
+            <span className="neon-text">AYITIRTMO</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="text-haiti-blue text-lg md:text-xl font-medium"
+          >
+            HAITIAN MUSIC
+          </motion.p>
+        </motion.header>
+
+        {/* Body Content */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-20">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="text-center text-2xl md:text-3xl font-bold text-white mb-8"
+          >
+            🎶 The Haitian Music-verse Revolution 🎶
+          </motion.h2>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.9, duration: 0.8 }}
+            className="mb-12 min-h-[100px]"
+          >
+            <AudioVisualizer audioRef={audioRef} />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full px-4 mb-12 min-h-[300px]">
+            {features.map((feature, index) => (
+              <FeatureCard key={feature.title} {...feature} delay={1.1 + index * 0.2} />
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.7, duration: 0.8 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <Link href={ROUTES.DASHBOARD}>
+              <Button className="btn-haiti min-w-[200px]">Get Started</Button>
+            </Link>
+            <Link href={ROUTES.SUBSCRIBE}>
+              <Button
+                variant="outline"
+                className="min-w-[200px] border-white/20 text-white hover:bg-white/10"
+              >
+                Subscribe
+              </Button>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2, duration: 0.8 }}
+            className="mt-8"
+          >
+            <button
+              onClick={toggleAudio}
+              className="text-white/50 hover:text-white transition-colors text-sm"
+            >
+              {isPlaying ? '🔊 Click to pause music' : '🔇 Click to play music'}
+            </button>
+          </motion.div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 mt-auto">
+        {/* Wavy separator (stabilized) */}
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0 }}
+          className="pointer-events-none select-none"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          <svg className="w-full h-8 mb-6" viewBox="0 0 1200 40" preserveAspectRatio="none">
+            <path
+              d="M0,20 Q300,0 600,20 T1200,20 V40 H0 Z"
+              fill="rgba(255,255,255,0.1)"
+            />
+          </svg>
+        </motion.div>
+
+        <div className="max-w-7xl mx-auto px-4 pb-8 text-white/60 text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+              <Link href="/about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            </div>
+            <p className="text-xs">&copy; {new Date().getFullYear()} AyitiRitmo. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }

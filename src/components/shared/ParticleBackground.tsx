@@ -1,57 +1,136 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Particles, { initParticlesEngine } from '@tsparticles/react';
+import { 
+  type Container, 
+  type ISourceOptions,
+  MoveDirection,
+  OutMode 
+} from '@tsparticles/engine';
+import { loadSlim } from '@tsparticles/slim';
 
-interface AudioVisualizerProps {
+interface ParticleBackgroundProps {
   className?: string;
-  barCount?: number;
-  audioRef?: React.RefObject<HTMLAudioElement>;
+  theme?: 'dark' | 'light';
 }
 
-const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
-  className = '',
-  barCount = 50,
-  audioRef,
+const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ 
+  className = '', 
+  theme = 'dark' 
 }) => {
-  const [bars, setBars] = useState<number[]>(new Array(barCount).fill(20));
-  const animationRef = useRef<number>();
+  const [init, setInit] = useState(false);
 
   useEffect(() => {
-    // Simulate audio wave animation
-    const animateBars = () => {
-      setBars(prevBars => 
-        prevBars.map((bar, index) => {
-          const time = Date.now() * 0.001;
-          const wave = Math.sin(time + index * 0.15) * 15 + 25;
-          return Math.max(15, Math.min(50, wave));
-        })
-      );
-      animationRef.current = requestAnimationFrame(animateBars);
-    };
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
 
-    animateBars();
+  const particlesOptions: ISourceOptions = useMemo(() => ({
+    background: {
+      color: {
+        value: 'transparent',
+      },
+    },
+    fpsLimit: 120,
+    interactivity: {
+      events: {
+        onClick: {
+          enable: true,
+          mode: 'push',
+        },
+        onHover: {
+          enable: true,
+          mode: 'repulse',
+        },
+        resize: true,
+      },
+      modes: {
+        push: {
+          quantity: 4,
+        },
+        repulse: {
+          distance: 200,
+          duration: 0.4,
+        },
+      },
+    },
+    particles: {
+      color: {
+        value: [
+          '#00FFFF', // Neon Blue
+          '#FF00FF', // Neon Pink
+          '#00148E', // Haiti Blue
+          '#CD4028', // Haiti Red
+          '#F4A460', // Gold
+        ],
+      },
+      links: {
+        color: '#ffffff',
+        distance: 150,
+        enable: true,
+        opacity: 0.2,
+        width: 1,
+      },
+      move: {
+        direction: MoveDirection.none,
+        enable: true,
+        outModes: {
+          default: OutMode.out,
+        },
+        random: false,
+        speed: 2,
+        straight: false,
+      },
+      number: {
+        density: {
+          enable: true,
+          area: 800,
+        },
+        value: 80,
+      },
+      opacity: {
+        value: 0.5,
+        animation: {
+          enable: true,
+          speed: 1,
+          minimumValue: 0.1,
+        },
+      },
+      shape: {
+        type: ['circle', 'triangle'],
+      },
+      size: {
+        value: { min: 1, max: 5 },
+        animation: {
+          enable: true,
+          speed: 20,
+          minimumValue: 0.1,
+        },
+      },
+    },
+    detectRetina: true,
+  }), []);
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [barCount]);
+  const particlesLoaded = async (container?: Container): Promise<void> => {
+    // Particle container loaded
+  };
+
+  if (!init) {
+    return null;
+  }
 
   return (
-    <div className={`flex items-end justify-center gap-1 h-16 overflow-hidden ${className}`}>
-      {bars.map((height, index) => (
-        <div
-          key={index}
-          className="w-1 bg-gradient-to-t from-haiti-red via-haiti-gold to-haiti-blue rounded-full transition-all duration-100 ease-out"
-          style={{
-            height: `${height}px`,
-            transform: `translateY(${50 - height}px)`,
-          }}
-        />
-      ))}
-    </div>
+    <Particles
+      id="tsparticles"
+      particlesLoaded={particlesLoaded}
+      options={particlesOptions}
+      className={`fixed inset-0 pointer-events-none z-0 opacity-30 ${className}`}
+    />
   );
 };
 
-export default AudioVisualizer;
+export default ParticleBackground;

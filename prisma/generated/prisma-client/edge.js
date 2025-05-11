@@ -382,11 +382,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://ayitiritmo_user:Klein@localhost:5432/ayitiritmo_db?schema=public"
+        "value": null
       }
     }
   },

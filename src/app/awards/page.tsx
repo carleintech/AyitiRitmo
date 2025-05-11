@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
+import {
   Trophy,
   Star,
   Medal,
@@ -67,21 +67,13 @@ const Awards = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <h1 className="text-3xl font-bold text-white mb-2">AyitiRitmo Music Awards</h1>
         <p className="text-white/60">Celebrating excellence in Haitian music</p>
       </motion.div>
 
       {/* Hero Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
         <Card className="overflow-hidden bg-gradient-to-br from-haiti-red via-orange-500 to-haiti-gold">
           <div className="p-8 relative">
             <div className="flex justify-between items-center relative z-10">
@@ -107,18 +99,14 @@ const Awards = () => {
       </motion.div>
 
       {/* Award Categories Tabs */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
         <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-slate-800">
             {awardCategories.map((category) => {
               const Icon = category.icon;
               return (
-                <TabsTrigger 
-                  key={category.id} 
+                <TabsTrigger
+                  key={category.id}
                   value={category.id}
                   className="data-[state=active]:bg-haiti-red data-[state=active]:text-white"
                 >
@@ -182,144 +170,25 @@ const Awards = () => {
 
           <TabsContent value="carnival" className="mt-6">
             <div className="space-y-6">
-              <Card className="p-6 bg-gradient-to-br from-haiti-gold/20 to-haiti-gold/5">
-          <div className="flex items-center gap-3 mb-2">
-            <Trophy className="h-6 w-6 text-haiti-gold" />
-            <h3 className="font-semibold text-white">Nominated Artists</h3>
-          </div>
-          <p className="text-2xl font-bold text-white mb-1">48</p>
-          <p className="text-white/60 text-sm">This year's nominees</p>
-        </Card>
-      </motion.div>
-    </div>
-  );
-};
-
-export default Awards;6 bg-gradient-to-br from-orange-500/20 to-red-500/20">
-                <div className="flex items-center gap-4 mb-4">
-                  <Crown className="h-8 w-8 text-haiti-gold" />
-                  <div>
-                    <h3 className="text-xl font-bold text-white">Carnival Awards 2024</h3>
-                    <p className="text-white/60">Celebrating the spirit of Haitian Carnival</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {['Best Carnival Song', 'Best Carnival Band', 'Best Costume'].map((category) => (
-                    <Card key={category} className="p-4 bg-black/20">
-                      <h4 className="font-medium text-white">{category}</h4>
-                      <p className="text-sm text-white/60">Voting closes March 5</p>
-                    </Card>
-                  ))}
-                </div>
+              <Card className="p-6 bg-gradient-to-br from-haiti-gold to-orange-400 text-white">
+                <h3 className="text-xl font-bold mb-2">Carnival Awards 2024</h3>
+                <p>Join us in celebrating the vibrant sounds and traditions of Haitian Carnival.</p>
               </Card>
             </div>
           </TabsContent>
 
           <TabsContent value="top-artists" className="mt-6">
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                {[1, 2, 3, 4, 5].map((rank) => (
-                  <Card key={rank} className="p-4 hover:bg-slate-800/80 transition-colors cursor-pointer">
-                    <div className="relative">
-                      <div className={`absolute -top-2 -left-2 w-8 h-8 rounded-full ${
-                        rank === 1 ? 'bg-haiti-gold' : 
-                        rank === 2 ? 'bg-gray-300' : 
-                        rank === 3 ? 'bg-amber-700' : 
-                        'bg-haiti-blue'
-                      } flex items-center justify-center text-white text-sm font-bold`}>
-                        #{rank}
-                      </div>
-                      <div className="w-full aspect-square bg-gradient-to-br from-haiti-red to-haiti-blue rounded-lg mb-3" />
-                      <h4 className="font-medium text-white">Artist Name {rank}</h4>
-                      <p className="text-sm text-white/60">1.2M monthly listeners</p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+              <Card className="p-6 bg-gradient-to-br from-blue-600 to-purple-500 text-white">
+                <h3 className="text-xl font-bold mb-2">Top Artists of the Year</h3>
+                <p>Recognizing the artists who defined the sound of 2024.</p>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
       </motion.div>
-
-      {/* Upcoming Events */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        <h2 className="text-2xl font-bold text-white mb-4">Upcoming Award Shows</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {upcomingEvents.map((event) => (
-            <Card key={event.id} className="p-6 hover:bg-slate-800/80 transition-colors cursor-pointer">
-              <div className="flex gap-4">
-                <div className={`w-24 h-24 bg-gradient-to-br ${event.image} rounded-lg flex-shrink-0 flex items-center justify-center`}>
-                  <Trophy className="h-10 w-10 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-bold text-white">{event.name}</h3>
-                      <p className="text-sm text-white/60">{event.description}</p>
-                    </div>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      event.status === 'Voting Open' ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'
-                    }`}>
-                      {event.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 mt-3 text-sm text-white/60">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {event.date}
-                    </span>
-                    <span>{event.location}</span>
-                  </div>
-                  <Button className="mt-4" size="sm">
-                    {event.status === 'Voting Open' ? 'Vote Now' : 'Learn More'}
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* Award Stats */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        <Card className="p-6 bg-gradient-to-br from-haiti-red/20 to-haiti-red/5">
-          <div className="flex items-center gap-3 mb-2">
-            <Vote className="h-6 w-6 text-haiti-red" />
-            <h3 className="font-semibold text-white">Total Votes</h3>
-          </div>
-          <p className="text-2xl font-bold text-white mb-1">125,432</p>
-          <p className="text-white/60 text-sm">Cast this season</p>
-        </Card>
-
-        <Card className="p-6 bg-gradient-to-br from-haiti-blue/20 to-haiti-blue/5">
-          <div className="flex items-center gap-3 mb-2">
-            <History className="h-6 w-6 text-haiti-blue" />
-            <h3 className="font-semibold text-white">Award Categories</h3>
-          </div>
-          <p className="text-2xl font-bold text-white mb-1">15</p>
-          <p className="text-white/60 text-sm">Across all shows</p>
-        </Card>
-
-        <Card className="p-6 bg-gradient-to-br from-haiti-gold/20 to-haiti-gold/5">
-          <div className="flex items-center gap-3 mb-2">
-            <Medal className="h-6 w-6 text-haiti-gold" />
-            <h3 className="font-semibold text-white">Total Nominees</h3>
-          </div>
-          <p className="text-2xl font-bold text-white mb-1">300+</p>
-          <p className="text-white/60 text-sm">This season</p>
-        </Card>
-      </motion.div>
     </div>
-  )
+  );
 };
 
 export default Awards;

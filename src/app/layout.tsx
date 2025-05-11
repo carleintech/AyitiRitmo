@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import LayoutWrapper from '@/components/layout/LayoutWrapper'
+import { MusicProvider } from '@/context/MusicContext'
 
 export const metadata: Metadata = {
   title: 'AyitiRitmo - The Haitian Music Revolution',
@@ -33,9 +34,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
-        <LayoutWrapper>
-          {children}
-        </LayoutWrapper>
+        <MusicProvider>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
+        </MusicProvider>
       </body>
     </html>
   )

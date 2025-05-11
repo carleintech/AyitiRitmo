@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Play, 
-  Music,
+  Music as MusicIcon,  // Ensure you import the correct Music icon
   Radio,
   Mic2,
   Disc,
@@ -18,7 +18,7 @@ import {
 
 const genres = [
   { id: 'news', label: 'Music News', icon: Newspaper },
-  { id: 'konpa', label: 'Konpa', icon: Music },
+  { id: 'konpa', label: 'Konpa', icon: MusicIcon },  // Use MusicIcon instead of Music
   { id: 'zouk', label: 'Zouk', icon: Disc },
   { id: 'rasin', label: 'Rasin (Roots Music)', icon: Radio },
   { id: 'rap', label: 'Rap Kreyòl', icon: Mic2 },
@@ -75,7 +75,7 @@ const Music = () => {
                 </Button>
               </div>
               <div className="hidden md:block opacity-30">
-                <Music className="h-48 w-48 text-white" />
+                <MusicIcon className="h-48 w-48 text-white" />
               </div>
             </div>
           </div>
@@ -160,17 +160,14 @@ const Music = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 text-sm text-haiti-gold mb-1">
                       <Calendar className="h-3 w-3" />
-                      Live Performance • May 15, 2024
+                      May 10, 2024
                     </div>
-                    <h3 className="font-semibold text-white mb-1">
-                      Artist Live Concert {i}
+                    <h3 className="font-semibold text-white mb-1 line-clamp-2">
+                      Live Event {i}
                     </h3>
-                    <p className="text-sm text-white/60">
-                      Watch the full live performance from the recent concert...
+                    <p className="text-sm text-white/60 line-clamp-2">
+                      Catch your favorite Haitian artists live in concert...
                     </p>
-                    <Button variant="ghost" size="sm" className="text-haiti-blue hover:text-haiti-red mt-2 px-0">
-                      Watch Now <ArrowRight className="h-4 w-4 ml-1" />
-                    </Button>
                   </div>
                 </Card>
               ))}
@@ -178,63 +175,6 @@ const Music = () => {
           </TabsContent>
         </Tabs>
       </motion.div>
-
-      {/* New Releases */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">New Releases</h2>
-          <Button variant="ghost" className="text-white/60 hover:text-white">
-            See all <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          {newReleases.map((album) => (
-            <Card key={album.id} className="p-4 hover:bg-slate-800/80 transition-colors cursor-pointer">
-              <div className={`aspect-square bg-gradient-to-br ${album.cover} rounded-lg mb-3 relative overflow-hidden group`}>
-                <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                  {album.type}
-                </div>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                  <Play className="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </div>
-              <h3 className="font-medium text-white line-clamp-1">{album.title}</h3>
-              <p className="text-sm text-white/60 line-clamp-1">{album.artist}</p>
-            </Card>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* Editor's Pick & Top Playlists */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Editor's Pick & Top 10 Playlists</h2>
-          <Button variant="ghost" className="text-white/60 hover:text-white">
-            See all <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          {topPlaylists.map((playlist) => (
-            <Card key={playlist.name} className="p-4 hover:bg-slate-800/80 transition-colors cursor-pointer">
-              <div className={`aspect-square bg-gradient-to-br ${playlist.gradient} rounded-lg mb-3 relative overflow-hidden group`}>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                  <Play className="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </div>
-              <h3 className="font-medium text-white line-clamp-1">{playlist.name}</h3>
-              <p className="text-xs text-white/60">{playlist.songs} songs</p>
-            </Card>
-          ))}
-        </div>
-      </motion.section>
     </div>
   );
 };

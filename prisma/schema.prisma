@@ -1,0 +1,326 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma-client"  // Set the path to where the client will be generated
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  emailVerified     DateTime?
+  name              String?
+  image             String?
+  password          String?
+  role              Role      @default(FAN)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  accounts          Account[]
+  sessions          Session[]
+  artist            Artist?
+  playlists         Playlist[]
+  likedSongs        LikedSong[]
+  followedArtists   Follow[]
+  comments          Comment[]
+  photoLikes        PhotoLike[]
+  photoComments     PhotoComment[]
+  subscriptions     Subscription[]  // New: added relation for Subscription
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Artist {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  artistName      String
+  bio             String?
+  genres          String[]
+  verified        Boolean   @default(false)
+  profileImage    String?
+  coverImage      String?
+  spotifyUrl      String?
+  instagramUrl    String?
+  twitterUrl      String?
+  youtubeUrl      String?
+  website         String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  songs           Song[]
+  albums          Album[]
+  followers       Follow[]
+  photos          Photo[]   // New: Artist photos
+  photoAlbums     PhotoAlbum[] // New: Photo albums
+}
+
+model Song {
+  id              String    @id @default(cuid())
+  title           String
+  artistId        String
+  albumId         String?
+  duration        Int
+  audioUrl        String
+  coverArt        String?
+  lyrics          String?
+  genre           String?
+  releaseDate     DateTime?
+  isExplicit      Boolean   @default(false)
+  streamCount     Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  artist          Artist    @relation(fields: [artistId], references: [id])
+  album           Album?    @relation(fields: [albumId], references: [id])
+  likes           LikedSong[]
+  playlistSongs   PlaylistSong[]
+  chartEntries    ChartEntry[]
+}
+
+model Album {
+  id              String    @id @default(cuid())
+  title           String
+  artistId        String
+  coverArt        String?
+  releaseDate     DateTime?
+  totalTracks     Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  artist          Artist    @relation(fields: [artistId], references: [id])
+  songs           Song[]
+}
+
+model Playlist {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  userId          String
+  coverArt        String?
+  isPublic        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+  songs           PlaylistSong[]
+}
+
+model PlaylistSong {
+  id              String    @id @default(cuid())
+  playlistId      String
+  songId          String
+  order           Int
+
+  // Relations
+  playlist        Playlist  @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  song            Song      @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, songId])
+}
+
+model LikedSong {
+  id              String    @id @default(cuid())
+  userId          String
+  songId          String
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  song            Song      @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, songId])
+}
+
+model Follow {
+  id              String    @id @default(cuid())
+  followerId      String
+  artistId        String
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  follower        User      @relation(fields: [followerId], references: [id], onDelete: Cascade)
+  artist          Artist    @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, artistId])
+}
+
+model Chart {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  type            ChartType
+  country         String?
+  startDate       DateTime
+  endDate         DateTime
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  entries         ChartEntry[]
+}
+
+model ChartEntry {
+  id              String    @id @default(cuid())
+  chartId         String
+  songId          String
+  rank            Int
+  previousRank    Int?
+  weeksOnChart    Int       @default(1)
+
+  // Relations
+  chart           Chart     @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  song            Song      @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([chartId, songId])
+}
+
+model Comment {
+  id              String    @id @default(cuid())
+  userId          String
+  songId          String?
+  albumId         String?
+  content         String
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// NEW MODELS FOR PHOTO SHARING
+
+model Photo {
+  id              String    @id @default(cuid())
+  artistId        String
+  albumId         String?
+  url             String
+  thumbnailUrl    String?
+  caption         String?
+  location        String?
+  latitude        Float?
+  longitude       Float?
+  takenAt         DateTime?
+  order           Int?
+  likeCount       Int       @default(0)
+  commentCount    Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  artist          Artist    @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  album           PhotoAlbum? @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  likes           PhotoLike[]
+  comments        PhotoComment[]
+}
+
+model PhotoAlbum {
+  id              String    @id @default(cuid())
+  artistId        String
+  title           String
+  description     String?
+  coverPhotoId    String?
+  isPublic        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  artist          Artist    @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  photos          Photo[]
+}
+
+model PhotoLike {
+  id              String    @id @default(cuid())
+  userId          String
+  photoId         String
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo           Photo     @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, photoId])
+}
+
+model PhotoComment {
+  id              String    @id @default(cuid())
+  userId          String
+  photoId         String
+  content         String
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo           Photo     @relation(fields: [photoId], references: [id], onDelete: Cascade)
+}
+
+// ENUMS
+
+enum Role {
+  FAN
+  ARTIST
+  ADMIN
+}
+
+enum ChartType {
+  WEEKLY
+  MONTHLY
+  YEARLY
+  ALL_TIME
+}
+
+enum SubscriptionTier {
+  FREE
+  PLUS
+  GOLD
+  ARTIST_PRO
+}
+
+model Subscription {
+  id                   String          @id @default(cuid())
+  userId               String          @unique
+  tier                 SubscriptionTier
+  stripeCustomerId     String?         @unique
+  stripeSubscriptionId String?         @unique
+  currentPeriodEnd     DateTime?
+  status               String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  // Relations
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

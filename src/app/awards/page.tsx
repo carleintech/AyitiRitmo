@@ -24,27 +24,6 @@ const awardCategories = [
   { id: 'top-artists', label: 'Top Artists of the Year', icon: Star },
 ];
 
-const upcomingEvents = [
-  {
-    id: 1,
-    name: 'Haitian Music Awards 2024',
-    date: 'December 15, 2024',
-    location: 'Miami Convention Center',
-    description: 'The biggest night in Haitian music',
-    status: 'Voting Open',
-    image: 'from-haiti-red to-haiti-blue',
-  },
-  {
-    id: 2,
-    name: 'Carnival Awards 2024',
-    date: 'March 10, 2024',
-    location: 'Port-au-Prince',
-    description: 'Celebrating the spirit of Carnival',
-    status: 'Nominations Closed',
-    image: 'from-orange-500 to-red-500',
-  },
-];
-
 const categories = [
   { name: 'Best Konpa Song', nominees: 5, icon: Trophy },
   { name: 'Best New Artist', nominees: 6, icon: Star },
@@ -67,13 +46,21 @@ const Awards = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <h1 className="text-3xl font-bold text-white mb-2">AyitiRitmo Music Awards</h1>
         <p className="text-white/60">Celebrating excellence in Haitian music</p>
       </motion.div>
 
       {/* Hero Banner */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
         <Card className="overflow-hidden bg-gradient-to-br from-haiti-red via-orange-500 to-haiti-gold">
           <div className="p-8 relative">
             <div className="flex justify-between items-center relative z-10">
@@ -99,7 +86,11 @@ const Awards = () => {
       </motion.div>
 
       {/* Award Categories Tabs */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-slate-800">
             {awardCategories.map((category) => {
@@ -117,6 +108,7 @@ const Awards = () => {
             })}
           </TabsList>
 
+          {/* Haitian Music Awards Tab */}
           <TabsContent value="haitian" className="mt-6">
             <div className="space-y-6">
               {/* Voting Categories */}
@@ -168,22 +160,28 @@ const Awards = () => {
             </div>
           </TabsContent>
 
+          {/* Carnival Awards Tab */}
           <TabsContent value="carnival" className="mt-6">
-            <div className="space-y-6">
-              <Card className="p-6 bg-gradient-to-br from-haiti-gold to-orange-400 text-white">
-                <h3 className="text-xl font-bold mb-2">Carnival Awards 2024</h3>
-                <p>Join us in celebrating the vibrant sounds and traditions of Haitian Carnival.</p>
-              </Card>
-            </div>
+            <Card className="p-6 bg-gradient-to-br from-orange-500 to-red-500 text-white">
+              <h3 className="text-xl font-bold mb-2">Carnival Awards Coming Soon</h3>
+              <p className="text-white/80 mb-4">Nominations have closed. Stay tuned for the shortlist!</p>
+              <Button className="bg-white text-orange-500 hover:bg-white/90">
+                <Calendar className="h-4 w-4 mr-2" />
+                View Event Details
+              </Button>
+            </Card>
           </TabsContent>
 
+          {/* Top Artists of the Year Tab */}
           <TabsContent value="top-artists" className="mt-6">
-            <div className="space-y-6">
-              <Card className="p-6 bg-gradient-to-br from-blue-600 to-purple-500 text-white">
-                <h3 className="text-xl font-bold mb-2">Top Artists of the Year</h3>
-                <p>Recognizing the artists who defined the sound of 2024.</p>
-              </Card>
-            </div>
+            <Card className="p-6 bg-gradient-to-br from-haiti-blue to-blue-500 text-white">
+              <h3 className="text-xl font-bold mb-2">Top Artists of the Year</h3>
+              <p className="text-white/80 mb-4">Discover the artists dominating the charts in 2024!</p>
+              <Button className="bg-white text-haiti-blue hover:bg-white/90">
+                <Star className="h-4 w-4 mr-2" />
+                See Rankings
+              </Button>
+            </Card>
           </TabsContent>
         </Tabs>
       </motion.div>

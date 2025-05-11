@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import {
   Home,
@@ -13,6 +14,8 @@ import {
   Heart,
   LogOut,
   Music,
+  Camera,
+  Mic2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -30,9 +33,17 @@ const actionItems = [
   { name: 'Liked Songs', href: '/liked', icon: Heart },
 ];
 
+const artistItems = [
+  { name: 'Artist Dashboard', href: '/artist/dashboard', icon: Mic2 },
+  { name: 'Upload Music', href: '/artist/upload', icon: Music },
+  { name: 'Photo Billboard', href: '/artist/photos', icon: Camera },
+];
+
 const Sidebar = () => {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const isHomePage = pathname === '/';
+  const isArtist = session?.user?.role === 'ARTIST';
 
   // Don't show sidebar on the home/welcome page
   if (isHomePage) {
@@ -100,6 +111,37 @@ const Sidebar = () => {
               </Link>
             );
           })}
+
+          {/* Artist Section */}
+          {isArtist && (
+            <>
+              <div className="h-px bg-white/10 my-4" />
+              <div className="px-3 py-2">
+                <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider">Artist Tools</h3>
+              </div>
+              
+              {artistItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+
+                return (
+                  <Link key={item.name} href={item.href}>
+                    <div
+                      className={cn(
+                        'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200',
+                        isActive
+                          ? 'bg-haiti-red/20 text-haiti-red'
+                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                      )}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span className="font-medium">{item.name}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </>
+          )}
         </nav>
 
         {/* Logout Button */}

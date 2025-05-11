@@ -141,7 +141,7 @@ const Profile = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   {/* Action Buttons */}
                   <div className="flex gap-2 mt-4 md:mt-0">
                     {isEditing ? (
@@ -226,201 +226,49 @@ const Profile = () => {
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-6 space-y-6">
-            {/* Top Artists */}
-            <Card className="p-6">
-              <h3 className="text-lg font-bold text-white mb-4">Your Top Artists</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {topArtists.map((artist, index) => (
-                  <div key={artist.name} className="text-center">
-                    <div className={`w-20 h-20 mx-auto mb-2 rounded-full bg-gradient-to-br ${artist.image} relative`}>
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-haiti-red rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        #{index + 1}
-                      </div>
+          <TabsContent value="overview" className="mt-6 space-y-4">
+            <h2 className="text-2xl font-semibold text-white">Top Artists</h2>
+            <div className="space-y-4">
+              {topArtists.map((artist, index) => (
+                <div key={index} className="flex items-center justify-between py-3 px-6 bg-slate-800 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${artist.image} rounded-full`}>
+                      {/* Add artist image here */}
                     </div>
-                    <h4 className="font-medium text-white text-sm line-clamp-1">{artist.name}</h4>
-                    <p className="text-xs text-white/60">{artist.plays} plays</p>
+                    <div>
+                      <div className="font-medium text-white">{artist.name}</div>
+                      <div className="text-xs text-white/60">Plays: {artist.plays}</div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Favorite Genres */}
-            <Card className="p-6">
-              <h3 className="text-lg font-bold text-white mb-4">Favorite Genres</h3>
-              <div className="flex flex-wrap gap-2">
-                {profile.favoriteGenres.map((genre) => (
-                  <span key={genre} className="px-3 py-1 bg-haiti-red/20 text-haiti-red rounded-full text-sm">
-                    {genre}
-                  </span>
-                ))}
-                {isEditing && (
-                  <Button size="sm" variant="outline" className="h-7 px-3 text-sm">
-                    + Add Genre
+                  <Button variant="outline" size="icon" className="p-2">
+                    <Star className="h-4 w-4 text-yellow-400" />
                   </Button>
-                )}
-              </div>
-            </Card>
-
-            {/* Recent Activity Preview */}
-            <Card className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-bold text-white">Recent Activity</h3>
-                <Button variant="ghost" size="sm" className="text-haiti-blue hover:text-haiti-red">
-                  View All
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {recentActivity.slice(0, 3).map((activity, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-haiti-blue/20 flex items-center justify-center">
-                      {activity.type === 'liked' && <Heart className="h-4 w-4 text-haiti-red" />}
-                      {activity.type === 'followed' && <User className="h-4 w-4 text-haiti-blue" />}
-                      {activity.type === 'playlist' && <Music className="h-4 w-4 text-haiti-gold" />}
-                      {activity.type === 'shared' && <Share2 className="h-4 w-4 text-green-500" />}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-white text-sm">
-                        {activity.type === 'liked' && `Liked "${activity.item}" by ${activity.artist}`}
-                        {activity.type === 'followed' && `Followed ${activity.item}`}
-                        {activity.type === 'playlist' && activity.item}
-                        {activity.type === 'shared' && `Shared "${activity.item}" by ${activity.artist}`}
-                      </p>
-                      <p className="text-xs text-white/60">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="playlists" className="mt-6">
-            <Card className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-bold text-white">Your Playlists</h3>
-                <Button className="bg-haiti-red hover:bg-haiti-red/90">
-                  <Music className="h-4 w-4 mr-2" />
-                  Create Playlist
-                </Button>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {Array.from({ length: 8 }, (_, i) => (
-                  <div key={i} className="cursor-pointer group">
-                    <div className="aspect-square bg-gradient-to-br from-haiti-red to-haiti-blue rounded-lg mb-2 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                        <Play className="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </div>
-                    <h4 className="font-medium text-white text-sm line-clamp-1">Playlist {i + 1}</h4>
-                    <p className="text-xs text-white/60">{Math.floor(Math.random() * 50) + 10} songs</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                </div>
+              ))}
+            </div>
           </TabsContent>
 
           <TabsContent value="activity" className="mt-6">
-            <Card className="p-6">
-              <h3 className="text-lg font-bold text-white mb-6">Activity Feed</h3>
-              <div className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 hover:bg-slate-800/50 rounded-lg transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-haiti-blue/20 flex items-center justify-center">
-                      {activity.type === 'liked' && <Heart className="h-5 w-5 text-haiti-red" />}
-                      {activity.type === 'followed' && <User className="h-5 w-5 text-haiti-blue" />}
-                      {activity.type === 'playlist' && <Music className="h-5 w-5 text-haiti-gold" />}
-                      {activity.type === 'shared' && <Share2 className="h-5 w-5 text-green-500" />}
+            <h2 className="text-2xl font-semibold text-white">Recent Activity</h2>
+            <div className="space-y-3">
+              {recentActivity.map((activity, index) => (
+                <div key={index} className="flex justify-between items-center py-3 px-6 bg-slate-800 rounded-lg">
+                  <div className="text-white">
+                    <div className="font-medium">{activity.type === 'liked' ? 'Liked' : activity.type === 'followed' ? 'Followed' : activity.type === 'shared' ? 'Shared' : 'Created'} 
+                      {activity.item} {activity.artist && `by ${activity.artist}`}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-white">
-                        {activity.type === 'liked' && `Liked "${activity.item}" by ${activity.artist}`}
-                        {activity.type === 'followed' && `Followed ${activity.item}`}
-                        {activity.type === 'playlist' && activity.item}
-                        {activity.type === 'shared' && `Shared "${activity.item}" by ${activity.artist}`}
-                      </p>
-                      <p className="text-sm text-white/60 mt-1">{activity.time}</p>
-                    </div>
+                    <div className="text-xs text-white/60">{activity.time}</div>
                   </div>
-                ))}
-              </div>
-            </Card>
+                </div>
+              ))}
+            </div>
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
-            <div className="space-y-6">
-              <Card className="p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Account Settings</h3>
-                <div className="space-y-4">
-                  <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="email" className="text-white">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      value={profile.email}
-                      className="bg-slate-800 border-slate-700"
-                    />
-                  </div>
-                  <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="password" className="text-white">Password</Label>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      placeholder="••••••••"
-                      className="bg-slate-800 border-slate-700"
-                    />
-                  </div>
-                  <Button className="bg-haiti-red hover:bg-haiti-red/90">
-                    Save Changes
-                  </Button>
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Preferences</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-white">Email Notifications</h4>
-                      <p className="text-sm text-white/60">Receive updates about new releases</p>
-                    </div>
-                    <input type="checkbox" className="rounded border-white/10 bg-white/5" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-white">Auto-play</h4>
-                      <p className="text-sm text-white/60">Automatically play related songs</p>
-                    </div>
-                    <input type="checkbox" className="rounded border-white/10 bg-white/5" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-white">High Quality Audio</h4>
-                      <p className="text-sm text-white/60">Stream in highest quality available</p>
-                    </div>
-                    <input type="checkbox" className="rounded border-white/10 bg-white/5" />
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Privacy</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-white">Public Profile</h4>
-                      <p className="text-sm text-white/60">Make your profile visible to others</p>
-                    </div>
-                    <input type="checkbox" className="rounded border-white/10 bg-white/5" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-white">Show Listening Activity</h4>
-                      <p className="text-sm text-white/60">Display what you're listening to</p>
-                    </div>
-                    <input type="checkbox" className="rounded border-white/10 bg-white/5" defaultChecked />
-                  </div>
-                </div>
-              </Card>
+            <h2 className="text-2xl font-semibold text-white">Settings</h2>
+            <div className="space-y-4">
+              <Button variant="outline" className="w-full py-3">Change Password</Button>
+              <Button variant="outline" className="w-full py-3">Account Settings</Button>
             </div>
           </TabsContent>
         </Tabs>

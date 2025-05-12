@@ -1,0 +1,50 @@
+// src/lib/plans.ts
+export const subscriptionPlans: SubscriptionPlan[] = [
+  {
+    id: 'free',
+    name: 'Free',
+    description: 'Perfect for casual listeners',
+    price: 0,
+    interval: 'month',
+    features: [
+      'Ad-supported listening',
+      'Mobile and web playback',
+      'Shuffle mode',
+      'Basic quality audio',
+    ],
+    stripePriceId: '',
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    description: 'Ad-free experience with premium features',
+    price: 5,
+    interval: 'month',
+    features: [
+      'Ad-free listening',
+      'Offline playback',
+      'High quality audio',
+      'Unlimited skips',
+      'Play any song',
+      'Create playlists',
+    ],
+    stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID!,
+  },
+  {
+    id: 'gold',
+    name: 'Gold',
+    description: 'Ultimate experience with exclusive content',
+    price: 10,
+    interval: 'month',
+    features: [
+      'Everything in Premium',
+      'Exclusive early releases',
+      'Fan club access',
+      'Artist meet & greets',
+      'HD video content',
+      'Concert livestreams',
+      'Limited merch access',
+    ],
+    stripePriceId: process.env.STRIPE_GOLD_PRICE_ID!,
+  },
+];

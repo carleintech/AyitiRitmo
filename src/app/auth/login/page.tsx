@@ -2,16 +2,51 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { Music, Mail, Lock, Github, Chrome, ArrowRight } from 'lucide-react';
+import { Music, Mail, Lock, Github, Chrome, ArrowRight, Loader2 } from 'lucide-react';
 
 const Login = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Invalid email or password');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOAuthSignIn = async (provider: 'google' | 'github') => {
+    setIsLoading(true);
+    await signIn(provider, { callbackUrl: '/dashboard' });
+    setIsLoading(false);
+  };
 
   return (
     <motion.div
@@ -32,13 +67,30 @@ const Login = () => {
           <p className="text-white/60">Sign in to continue to AyitiRitmo</p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <p className="text-red-400 text-sm text-center">{error}</p>
+          </div>
+        )}
+
         {/* Social Login */}
         <div className="space-y-3 mb-6">
-          <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+          <Button 
+            variant="outline" 
+            className="w-full border-white/20 text-white hover:bg-white/10"
+            onClick={() => handleOAuthSignIn('google')}
+            disabled={isLoading}
+          >
             <Chrome className="h-4 w-4 mr-2" />
             Continue with Google
           </Button>
-          <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+          <Button 
+            variant="outline" 
+            className="w-full border-white/20 text-white hover:bg-white/10"
+            onClick={() => handleOAuthSignIn('github')}
+            disabled={isLoading}
+          >
             <Github className="h-4 w-4 mr-2" />
             Continue with GitHub
           </Button>
@@ -55,7 +107,7 @@ const Login = () => {
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-white">Email</Label>
             <div className="relative">
@@ -67,6 +119,8 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -82,6 +136,8 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -96,9 +152,18 @@ const Login = () => {
             </Link>
           </div>
 
-          <Button type="submit" className="w-full bg-haiti-red hover:bg-haiti-red/90">
-            Sign In
-            <ArrowRight className="h-4 w-4 ml-2" />
+          <Button type="submit" className="w-full bg-haiti-red hover:bg-haiti-red/90" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              <>
+                Sign In
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </>
+            )}
           </Button>
         </form>
 

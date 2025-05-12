@@ -308,11 +308,83 @@ exports.Prisma.PhotoCommentScalarFieldEnum = {
 exports.Prisma.SubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  tier: 'tier',
-  stripeCustomerId: 'stripeCustomerId',
   stripeSubscriptionId: 'stripeSubscriptionId',
-  currentPeriodEnd: 'currentPeriodEnd',
+  stripePriceId: 'stripePriceId',
   status: 'status',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  type: 'type',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  subscriptionId: 'subscriptionId'
+};
+
+exports.Prisma.ArtistRevenueScalarFieldEnum = {
+  id: 'id',
+  artistId: 'artistId',
+  paymentId: 'paymentId',
+  amount: 'amount',
+  platformFee: 'platformFee',
+  type: 'type',
+  paid: 'paid',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  artistId: 'artistId',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  image: 'image',
+  inStock: 'inStock',
+  category: 'category',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  artistId: 'artistId',
+  paymentId: 'paymentId',
+  total: 'total',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  productId: 'productId',
+  quantity: 'quantity',
+  price: 'price',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TicketScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  userId: 'userId',
+  price: 'price',
+  type: 'type',
+  status: 'status',
+  qrCode: 'qrCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -344,11 +416,11 @@ exports.ChartType = exports.$Enums.ChartType = {
   ALL_TIME: 'ALL_TIME'
 };
 
-exports.SubscriptionTier = exports.$Enums.SubscriptionTier = {
-  FREE: 'FREE',
-  PLUS: 'PLUS',
-  GOLD: 'GOLD',
-  ARTIST_PRO: 'ARTIST_PRO'
+exports.PaymentType = exports.$Enums.PaymentType = {
+  SUBSCRIPTION: 'SUBSCRIPTION',
+  TIP: 'TIP',
+  MERCHANDISE: 'MERCHANDISE',
+  TICKET: 'TICKET'
 };
 
 exports.Prisma.ModelName = {
@@ -369,7 +441,13 @@ exports.Prisma.ModelName = {
   PhotoAlbum: 'PhotoAlbum',
   PhotoLike: 'PhotoLike',
   PhotoComment: 'PhotoComment',
-  Subscription: 'Subscription'
+  Subscription: 'Subscription',
+  Payment: 'Payment',
+  ArtistRevenue: 'ArtistRevenue',
+  Product: 'Product',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  Ticket: 'Ticket'
 };
 
 /**

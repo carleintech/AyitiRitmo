@@ -3,51 +3,44 @@
 import { usePathname } from 'next/navigation';
 import MainNavigation from './MainNavigation';
 import Sidebar from './Sidebar';
-import MusicPlayer from '@/components/features/MusicPlayer';
-import { useMusic } from '@/context/MusicContext';
+import { MusicPlayer } from '@/components/features/MusicPlayer';
 
 interface LayoutWrapperProps {
   children: React.ReactNode;
 }
 
-const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
+const PUBLIC_ROUTES = ['/', '/auth/login', '/auth/register'];
+
+export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const pathname = usePathname();
-  const isHomePage = pathname === '/';
-  const isAuthPage = pathname.startsWith('/auth');
-  const { currentSong, isPlaying, togglePlayPause, next, previous } = useMusic();
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
 
-  if (isHomePage) {
-    return <>{children}</>;
-  }
-
-  if (isAuthPage) {
-    return <>{children}</>;
+  if (isPublicRoute) {
+    return (
+      <div className="min-h-screen bg-background">
+        {children}
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      <MainNavigation />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 ml-64 pt-16 pb-24">
-          <div className="p-6">
-            {children}
-          </div>
+    <div className="min-h-screen bg-background flex">
+      {/* Sidebar */}
+      <Sidebar />
+      
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Navigation */}
+        <MainNavigation />
+        
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-6 pb-24">
+          {children}
         </main>
       </div>
-      
-      {/* Music Player */}
-      {currentSong && (
-        <MusicPlayer
-          currentSong={currentSong}
-          isPlaying={isPlaying}
-          onPlayPause={togglePlayPause}
-          onNext={next}
-          onPrevious={previous}
-        />
-      )}
+
+      {/* Music Player - Always visible when logged in */}
+      <MusicPlayer />
     </div>
   );
-};
-
-export default LayoutWrapper;
+}

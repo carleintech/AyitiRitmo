@@ -1,221 +1,173 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { SubscriptionPlans } from '@/components/features/SubscriptionPlans';
 import { Button } from '@/components/ui/button';
-import { 
-  Check,
-  X,
-  Music,
-  Download,
-  Heart,
-  Star,
-  Trophy,
-  Sparkles
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Music, Users, DollarSign } from 'lucide-react';
+import Link from 'next/link';
 
-const plans = [
-  {
-    name: 'Free',
-    price: '0',
-    description: 'Basic access with ads',
-    features: [
-      { name: 'Access to music library', included: true },
-      { name: 'Basic playlists', included: true },
-      { name: 'Shuffle play', included: true },
-      { name: 'Ads between songs', included: true, isNegative: true },
-      { name: 'Limited skips', included: true },
-      { name: 'Offline downloads', included: false },
-      { name: 'HD audio quality', included: false },
-      { name: 'Exclusive content', included: false },
-    ],
-  },
-  {
-    name: 'Plus',
-    price: '5',
-    description: 'Ad-free listening experience',
-    highlighted: true,
-    features: [
-      { name: 'Ad-free listening', included: true },
-      { name: 'Unlimited skips', included: true },
-      { name: 'Offline downloads', included: true },
-      { name: 'High quality audio', included: true },
-      { name: 'Custom playlists', included: true },
-      { name: 'Early releases', included: false },
-      { name: 'Fan club access', included: false },
-      { name: 'Artist merchandise discounts', included: false },
-    ],
-  },
-  {
-    name: 'Gold',
-    price: '10',
-    description: 'Premium experience with exclusive perks',
-    features: [
-      { name: 'Everything in Plus', included: true },
-      { name: 'HD audio quality', included: true },
-      { name: 'Fan club access', included: true },
-      { name: 'Early releases', included: true },
-      { name: 'Exclusive content', included: true },
-      { name: 'Artist meet & greets', included: true },
-      { name: 'Merchandise discounts (20%)', included: true },
-      { name: 'Concert ticket presales', included: true },
-    ],
-  },
-  {
-    name: 'Artist Pro',
-    price: '20',
-    description: 'Complete toolkit for Haitian artists',
-    features: [
-      { name: 'Everything in Gold', included: true },
-      { name: 'Studio tools', included: true },
-      { name: 'Advanced analytics', included: true },
-      { name: 'Music distribution', included: true },
-      { name: 'Marketing tools', included: true },
-      { name: 'Revenue optimization', included: true },
-      { name: 'Sync licensing', included: true },
-      { name: 'Dedicated support', included: true },
-    ],
-  },
-];
+interface UserSubscription {
+  id: string;
+  plan: string;
+  status: string;
+  currentPeriodEnd: string;
+}
 
-const Subscribe = () => {
+export default function SubscribePage() {
+  const { data: session } = useSession();
+  const [currentSubscription, setCurrentSubscription] = useState<UserSubscription | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSubscription();
+  }, [session]);
+
+  const fetchSubscription = async () => {
+    if (!session?.user) return;
+
+    try {
+      const response = await fetch('/api/payments/subscription');
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentSubscription(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch subscription:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-haitian-blue"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-7xl mx-auto py-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
-        <h1 className="text-4xl font-bold text-white mb-4">
+    <div className="container mx-auto py-12 space-y-12">
+      {/* Header Section */}
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-haitian-red to-haitian-blue bg-clip-text text-transparent">
           Choose Your AyitiRitmo Experience
         </h1>
-        <p className="text-xl text-white/60 max-w-2xl mx-auto">
-          From free access to premium tools for artists - find the perfect plan for you
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Unlock premium features and support your favorite Haitian artists
         </p>
-      </motion.div>
-
-      {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {plans.map((plan, index) => (
-          <motion.div
-            key={plan.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-          >
-            <Card 
-              className={`relative overflow-hidden ${
-                plan.highlighted 
-                  ? 'border-haiti-red shadow-lg shadow-haiti-red/20 bg-gradient-to-b from-slate-800 to-slate-900' 
-                  : 'bg-slate-800'
-              }`}
-            >
-              {plan.highlighted && (
-                <div className="absolute top-0 right-0 bg-haiti-red text-white px-4 py-1 text-sm">
-                  Most Popular
-                </div>
-              )}
-              
-              <div className="p-6">
-                {/* Plan Name and Price */}
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-white mb-1">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1 mb-2">
-                    <span className="text-3xl font-bold text-white">${plan.price}</span>
-                    <span className="text-white/60">/month</span>
-                  </div>
-                  <p className="text-sm text-white/60">{plan.description}</p>
-                </div>
-
-                {/* Features */}
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature.name} className="flex items-start gap-2">
-                      {feature.included ? (
-                        <Check className={`h-5 w-5 mt-0.5 ${feature.isNegative ? 'text-yellow-500' : 'text-green-500'}`} />
-                      ) : (
-                        <X className="h-5 w-5 mt-0.5 text-red-500" />
-                      )}
-                      <span className={`text-sm ${
-                        feature.included 
-                          ? feature.isNegative ? 'text-yellow-400' : 'text-white' 
-                          : 'text-white/40'
-                      }`}>
-                        {feature.name}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Action Button */}
-                <Button 
-                  className={`w-full ${
-                    plan.highlighted 
-                      ? 'bg-haiti-red hover:bg-haiti-red/90' 
-                      : 'bg-white/10 hover:bg-white/20 text-white'
-                  }`}
-                >
-                  {plan.price === '0' ? 'Get Started Free' : 'Subscribe Now'}
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
       </div>
 
-      {/* Additional Benefits */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="mt-16 text-center"
-      >
-        <h2 className="text-2xl font-bold text-white mb-8">Why Subscribe to AyitiRitmo?</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-haiti-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart className="h-8 w-8 text-haiti-red" />
+      {/* Current Subscription Status */}
+      {currentSubscription && (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Current Subscription</span>
+              <Badge 
+                variant={currentSubscription.status === 'active' ? 'default' : 'destructive'}
+              >
+                {currentSubscription.status}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-lg font-semibold">{currentSubscription.plan} Plan</p>
+                <p className="text-sm text-muted-foreground">
+                  {currentSubscription.status === 'active' ? 
+                    `Renews on ${new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}` :
+                    'Subscription is not active'
+                  }
+                </p>
+              </div>
+              <Link href="/dashboard/subscription">
+                <Button variant="outline">Manage Subscription</Button>
+              </Link>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Support Haitian Artists</h3>
-            <p className="text-white/60">Your subscription directly supports Haitian musicians and helps preserve our culture</p>
-          </div>
+          </CardContent>
+        </Card>
+      )}
 
-          <div className="text-center">
-            <div className="w-16 h-16 bg-haiti-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Music className="h-8 w-8 text-haiti-blue" />
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Exclusive Content</h3>
-            <p className="text-white/60">Get access to exclusive tracks, behind-the-scenes content, and early releases</p>
-          </div>
+      {/* Subscription Plans */}
+      <div className="space-y-8">
+        <h2 className="text-2xl font-bold text-center">Select Your Plan</h2>
+        <SubscriptionPlans currentPlan={currentSubscription?.plan || 'free'} />
+      </div>
 
-          <div className="text-center">
-            <div className="w-16 h-16 bg-haiti-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Trophy className="h-8 w-8 text-haiti-gold" />
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Cultural Experience</h3>
-            <p className="text-white/60">Join our community celebrating Haitian culture through music, art, and events</p>
-          </div>
+      {/* Benefits Overview */}
+      <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
+        <Card className="p-6 text-center">
+          <Music className="h-12 w-12 mx-auto text-haitian-blue mb-4" />
+          <h3 className="font-bold mb-2">Premium Audio</h3>
+          <p className="text-sm text-muted-foreground">
+            Enjoy high-quality audio and exclusive releases from top Haitian artists
+          </p>
+        </Card>
+
+        <Card className="p-6 text-center">
+          <Users className="h-12 w-12 mx-auto text-haitian-red mb-4" />
+          <h3 className="font-bold mb-2">Artist Support</h3>
+          <p className="text-sm text-muted-foreground">
+            Directly support artists with your subscription and optional tips
+          </p>
+        </Card>
+
+        <Card className="p-6 text-center">
+          <DollarSign className="h-12 w-12 mx-auto text-haitian-gold mb-4" />
+          <h3 className="font-bold mb-2">Value for Money</h3>
+          <p className="text-sm text-muted-foreground">
+            Get access to exclusive content, events, and merchandise
+          </p>
+        </Card>
+      </div>
+
+      {/* Call to Action */}
+      <div className="text-center space-y-4 bg-gradient-to-r from-haitian-blue/10 to-haitian-red/10 p-8 rounded-lg">
+        <h2 className="text-2xl font-bold">Start Supporting Haitian Music Today</h2>
+        <p className="text-muted-foreground">
+          Join thousands of fans celebrating Haitian culture and empowering artists
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Link href="/dashboard">
+            <Button size="lg">Explore Music</Button>
+          </Link>
+          <Link href="/artists">
+            <Button size="lg" variant="outline">Browse Artists</Button>
+          </Link>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Money Back Guarantee */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="mt-12 text-center bg-slate-800/50 rounded-lg p-6"
-      >
-        <div className="flex items-center justify-center gap-2 text-haiti-gold mb-2">
-          <Sparkles className="h-5 w-5" />
-          <span className="font-semibold">30-Day Money Back Guarantee</span>
+      {/* FAQ or Additional Info */}
+      <div className="max-w-3xl mx-auto space-y-6">
+        <h2 className="text-xl font-bold text-center">Frequently Asked Questions</h2>
+        <div className="space-y-4">
+          <details className="border rounded-lg p-4">
+            <summary className="font-semibold cursor-pointer">Can I cancel anytime?</summary>
+            <p className="mt-2 text-muted-foreground">
+              Yes, you can cancel your subscription at any time. Your premium features will remain active until the end of your current billing period.
+            </p>
+          </details>
+          
+          <details className="border rounded-lg p-4">
+            <summary className="font-semibold cursor-pointer">How does artist support work?</summary>
+            <p className="mt-2 text-muted-foreground">
+              A portion of your subscription goes directly to artists based on your listening habits. You can also send direct tips and purchase merchandise to support your favorite artists.
+            </p>
+          </details>
+          
+          <details className="border rounded-lg p-4">
+            <summary className="font-semibold cursor-pointer">Is there a free trial?</summary>
+            <p className="mt-2 text-muted-foreground">
+              New users get a 7-day free trial of Premium features. You can upgrade to Premium or Gold at any time during or after the trial.
+            </p>
+          </details>
         </div>
-        <p className="text-white/60">Not satisfied? Get a full refund within 30 days, no questions asked.</p>
-      </motion.div>
+      </div>
     </div>
   );
-};
-
-export default Subscribe;
+}

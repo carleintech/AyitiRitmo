@@ -11,7 +11,6 @@ import {
   SkipForward,
   Volume2,
   VolumeX,
-  Minimize2,
   Maximize2,
   Heart,
   Shuffle,
@@ -20,20 +19,29 @@ import {
 import { useMusic } from '@/context/MusicContext';
 import Image from 'next/image';
 
+interface Song {
+  title: string;
+  artist: {
+    artistName: string;
+  };
+  duration: number;
+  coverArt: string; // Add this property
+}
+
 interface MiniMusicPlayerProps {
   className?: string;
   onExpand?: () => void;
 }
 
 const MiniMusicPlayer: React.FC<MiniMusicPlayerProps> = ({ className = '', onExpand }) => {
-  const { currentSong, isPlaying, togglePlayPause, next, previous } = useMusic();
+  const { currentSong, isPlaying, play, pause, nextSong, previousSong } = useMusic();
   const [showPlayer, setShowPlayer] = useState(true);
   const [hovered, setHovered] = useState(false);
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(75);
   const [isMuted, setIsMuted] = useState(false);
   const [duration, setDuration] = useState(0);
-  const hideTimeout = useRef<NodeJS.Timeout>();
+  const hideTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Auto-hide functionality
   useEffect(() => {
@@ -83,13 +91,15 @@ const MiniMusicPlayer: React.FC<MiniMusicPlayerProps> = ({ className = '', onExp
     }
   }, [currentSong]);
 
-  if (!currentSong) return null;
-
+  // Format time to MM:SS
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
+
+  // If no song is playing, don't render the player
+  if (!currentSong) return null;
 
   return (
     <AnimatePresence>
@@ -107,8 +117,8 @@ const MiniMusicPlayer: React.FC<MiniMusicPlayerProps> = ({ className = '', onExp
             {/* Progress bar */}
             <div className="w-full h-1 bg-white/10 cursor-pointer">
               <div 
-                className="h-full bg-haiti-red transition-all duration-300"
-                style={{ width: `${(progress / duration) * 100}%` }}
+                className="h-full bg-haitian-red transition-all duration-300"
+                style={{ width: `${duration ? (progress / duration) * 100 : 0}%` }}
               />
             </div>
 
@@ -134,7 +144,7 @@ const MiniMusicPlayer: React.FC<MiniMusicPlayerProps> = ({ className = '', onExp
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8 text-white/60 hover:text-haiti-red"
+                  className="h-8 w-8 text-white/60 hover:text-haitian-red"
                 >
                   <Heart className="h-4 w-4" />
                 </Button>
@@ -153,7 +163,7 @@ const MiniMusicPlayer: React.FC<MiniMusicPlayerProps> = ({ className = '', onExp
                 <Button
                   size="icon"
                   variant="ghost"
-                  onClick={previous}
+                  onClick={previousSong}
                   className="h-8 w-8 text-white/60 hover:text-white"
                 >
                   <SkipBack className="h-4 w-4" />
@@ -162,23 +172,23 @@ const MiniMusicPlayer: React.FC<MiniMusicPlayerProps> = ({ className = '', onExp
                 <Button
                   size="icon"
                   className="h-10 w-10 bg-white text-black hover:bg-white/90"
-                  onClick={togglePlayPause}
+                  onClick={isPlaying ? pause : play}
                 >
                   {isPlaying ? 
                     <Pause className="h-5 w-5" /> : 
                     <Play className="h-5 w-5 ml-0.5" />
                   }
                 </Button>
-                
+
                 <Button
                   size="icon"
                   variant="ghost"
-                  onClick={next}
+                  onClick={nextSong}
                   className="h-8 w-8 text-white/60 hover:text-white"
                 >
                   <SkipForward className="h-4 w-4" />
                 </Button>
-                
+
                 <Button
                   size="icon"
                   variant="ghost"

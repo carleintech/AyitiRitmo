@@ -71,7 +71,7 @@ export async function POST(request: Request) {
         audioUrl,
         coverArt,
         lyrics: validatedData.lyrics,
-        genre: validatedData.genre || metadata.genre || 'Uncategorized',
+        genre: validatedData.genre ?? metadata.genre ?? 'Uncategorized',
         isExplicit: validatedData.isExplicit,
         releaseDate: validatedData.releaseDate ? new Date(validatedData.releaseDate) : new Date(),
       },

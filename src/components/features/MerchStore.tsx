@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingCart, Plus, Minus } from 'lucide-react';
 import { formatCurrency } from '@/utils/payment';
 import Image from 'next/image';
@@ -19,8 +19,8 @@ interface Product {
 }
 
 interface MerchStoreProps {
-  products: Product[];
-  artistName: string;
+  readonly products: Product[];
+  readonly artistName: string;
 }
 
 export function MerchStore({ products, artistName }: MerchStoreProps) {
@@ -46,7 +46,7 @@ export function MerchStore({ products, artistName }: MerchStoreProps) {
   const calculateTotal = () => {
     return Object.entries(cart).reduce((total, [productId, quantity]) => {
       const product = products.find(p => p.id === productId);
-      return total + (product?.price || 0) * quantity;
+      return total + (product?.price ?? 0) * quantity;
     }, 0);
   };
 
@@ -79,7 +79,7 @@ export function MerchStore({ products, artistName }: MerchStoreProps) {
         }),
       });
 
-      const { clientSecret, paymentIntentId } = await response.json();
+      await response.json();
       
       // Integration with Stripe Elements would go here
       // Confirm payment after successful authentication

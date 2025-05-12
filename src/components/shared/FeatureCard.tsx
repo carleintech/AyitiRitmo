@@ -1,82 +1,107 @@
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { 
-  Play, 
   Heart, 
+  Play, 
   Music,
-  LucideIcon
+  ChevronRight
 } from 'lucide-react';
+import { FeatureCard as FeatureCardType } from '@/types';
 
-interface FeatureCardProps {
-  title: string;
-  description: string;
-  icon: 'play' | 'heart' | 'music';
-  gradient: string;
-  href: string;
+interface FeatureCardProps extends FeatureCardType {
   delay?: number;
 }
 
-const ICONS: Record<string, LucideIcon> = {
-  play: Play,
-  heart: Heart,
-  music: Music,
-};
-
-const FeatureCard: React.FC<FeatureCardProps> = ({
-  title,
-  description,
-  icon,
-  gradient,
-  href,
-  delay = 0,
-}) => {
-  const Icon = ICONS[icon];
+export default function FeatureCard({ 
+  title, 
+  description, 
+  icon, 
+  gradient, 
+  href, 
+  delay = 0 
+}: FeatureCardProps) {
+  // Get the appropriate icon component
+  const IconComponent = () => {
+    switch (icon) {
+      case 'heart':
+        return <Heart className="h-6 w-6 text-white" />;
+      case 'music':
+        return <Music className="h-6 w-6 text-white" />;
+      case 'play':
+      default:
+        return <Play className="h-6 w-6 text-white" />;
+    }
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ 
-        duration: 0.5, 
-        delay,
-        type: "spring",
-        bounce: 0.3,
-        damping: 20
+        duration: 0.6, 
+        delay: delay,
+        type: 'spring',
+        stiffness: 100
       }}
-      whileHover={{ scale: 1.05, y: -5 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ 
+        y: -10,
+        transition: { duration: 0.3 }
+      }}
     >
-      <Link href={href}>
-        <div className={`relative overflow-hidden rounded-2xl p-8 h-full ${gradient} group cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300`}>
-          {/* Background hover effect */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-          
-          {/* Icon */}
-          <div className="relative z-10 mb-4">
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
-              <Icon className="w-8 h-8 text-white" />
+      <Link href={href} className="block h-full">
+        <div 
+          className={`${gradient} relative h-full p-6 rounded-xl shadow-lg group overflow-hidden`}
+        >
+          {/* Background pattern */}
+          <div className="absolute inset-0 opacity-30">
+            <svg 
+              className="h-full w-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <pattern
+                  id={`pattern-${title}`}
+                  x="0"
+                  y="0"
+                  width="10"
+                  height="10"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.2)" />
+                </pattern>
+              </defs>
+              <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                fill={`url(#pattern-${title})`}
+              />
+            </svg>
+          </div>
+
+          {/* Card content */}
+          <div className="relative z-10 flex flex-col h-full">
+            <div className="mb-4 p-3 rounded-full bg-white/10 backdrop-blur-sm w-fit">
+              <IconComponent />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
+            <p className="text-white/80 mb-4">{description}</p>
+            
+            <div className="mt-auto flex items-center text-white group-hover:text-haiti-gold transition-colors">
+              <span className="text-sm font-medium">Explore</span>
+              <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
             </div>
           </div>
-          
-          {/* Content */}
-          <div className="relative z-10">
-            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-white/90 transition-colors duration-300">
-              {title}
-            </h3>
-            <p className="text-white/80 text-sm group-hover:text-white/70 transition-colors duration-300">
-              {description}
-            </p>
-          </div>
-          
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16 group-hover:bg-white/10 transition-colors duration-300" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12 group-hover:bg-white/10 transition-colors duration-300" />
+
+          {/* Hover effect - animated gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-haiti-gold/0 to-haiti-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
       </Link>
     </motion.div>
   );
-};
-
-export default FeatureCard;
+}

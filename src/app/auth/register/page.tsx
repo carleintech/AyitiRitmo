@@ -281,6 +281,7 @@ const Register = () => {
             <input 
               type="checkbox" 
               id="terms" 
+              title="Agree to terms and privacy policy"
               className="mt-1 rounded border-white/10 bg-white/5" 
               required 
               disabled={isLoading}

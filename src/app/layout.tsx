@@ -1,46 +1,33 @@
+// src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import LayoutWrapper from '@/components/layout/LayoutWrapper';
 import SessionProvider from './SessionProvider';
 import { MusicProvider } from '@/context/MusicContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AyitiRitmo - Celebrating Haitian Music',
-  description: 'The ultimate platform for Haitian music and culture',
+  title: 'AyitiRitmo - Haitian Music Platform',
+  description: 'Discover, stream, and celebrate Haitian music culture',
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link 
-          rel="preconnect" 
-          href="https://fonts.googleapis.com" 
-        />
-        <link 
-          rel="preconnect" 
-          href="https://fonts.gstatic.com" 
-          crossOrigin="anonymous" 
-        />
-      </head>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="dark">
           <SessionProvider>
             <MusicProvider>
-              {children}
+              <LayoutWrapper>
+                {children}
+              </LayoutWrapper>
             </MusicProvider>
           </SessionProvider>
         </ThemeProvider>

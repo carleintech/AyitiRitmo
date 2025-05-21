@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import { Engine } from "tsparticles-engine";
 
 // Dummy data for sections (expand as needed)
 const timelineItems = [
@@ -15,7 +16,7 @@ const timelineItems = [
 ];
 
 const essentialTracks = [
-  { img: "/tracks/ram.jpg", title: "RAM – “Agwe” (1998)", audio: "/audio/agwe.mp3", artist: "RAM", year: 1998 }
+  { img: "/tracks/ram.jpg", title: "RAM – \"Agwe\" (1998)", audio: "/audio/agwe.mp3", artist: "RAM", year: 1998 }
   // Add more...
 ];
 
@@ -66,8 +67,8 @@ export default function DiscoverAyitiPage() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const particlesInit = async (main: any) => {
-    await loadFull(main);
+  const particlesInit = async (engine: Engine) => {
+    await loadFull(engine);
   };
 
   return (
@@ -254,7 +255,7 @@ export default function DiscoverAyitiPage() {
             Essential Sounds of Ayiti
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {essentialTracks.map((track, idx) => (
+            {essentialTracks.map((track) => (
               <motion.div
                 key={track.title}
                 whileHover={{ scale: 1.03 }}

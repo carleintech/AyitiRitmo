@@ -225,7 +225,7 @@ function PreferencesTab() {
                 className="h-4 w-4 text-haiti-gold focus:ring-haiti-gold" 
               />
               <label htmlFor="lang-kreyol" className="ml-2 text-white">
-                Kreyòl
+                Haitian Creole
               </label>
             </div>
             <div className="flex items-center">
@@ -377,7 +377,7 @@ function SubscriptionTab() {
             </div>
             <div>
               <h3 className="text-white font-medium">Free Plan</h3>
-              <p className="text-white/70">You're currently on the Free Plan</p>
+              <p className="text-white/70">You are currently on the Free Plan</p>
             </div>
           </div>
         </div>

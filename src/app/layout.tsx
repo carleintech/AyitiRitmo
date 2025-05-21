@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
-import { AuthProvider } from "@/lib/auth-context";
+import { AuthProvider } from "@/lib/auth-context";  // Correct path
+import { MusicProvider } from "@/lib/music-context";
 import RouteGuard from "@/components/auth/RouteGuard";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
@@ -23,14 +24,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(
-        "min-h-screen bg-background font-sans antialiased",
-        fontSans.variable
-      )}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
         <AuthProvider>
-          <RouteGuard>
-            {children}
-          </RouteGuard>
+          <MusicProvider>
+            <RouteGuard>
+              {children}
+            </RouteGuard>
+          </MusicProvider>
         </AuthProvider>
       </body>
     </html>

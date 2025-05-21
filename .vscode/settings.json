@@ -3,5 +3,6 @@
         "*.dbclient-js": "javascript",
         "*.embeddedhtml": "html",
         "plyconfig.json": "jsonc"
-    }
+    },
+    "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }

@@ -24,3 +24,30 @@ export function formatDuration(seconds: number): string {
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
+
+// Define app routes
+export const ROUTES = {
+  HOME: "/",
+  WELCOME: "/welcome",
+  DASHBOARD: "/dashboard",
+  EXPLORE: "/explore",
+  SEARCH: "/search",
+  LIBRARY: "/library",
+  PROFILE: "/profile",
+  ARTIST_PORTAL: "/artist-portal",
+  UPLOAD: "/artist-portal/upload",
+  CREATE_PLAYLIST: "/create-playlist",
+  RECOMMENDATIONS: "/recommendations",
+  SUBSCRIBE: "/subscribe",
+  ABOUT: "/about",
+  TERMS: "/terms",
+  PRIVACY: "/privacy",
+  AUTH_LOGIN: "/welcome?signin=true",
+  AUTH_REGISTER: "/welcome?signup=true"
+};
+
+// Extract search parameters from URL
+export function getURLParams(): URLSearchParams {
+  if (typeof window === 'undefined') return new URLSearchParams();
+  return new URLSearchParams(window.location.search);
+}

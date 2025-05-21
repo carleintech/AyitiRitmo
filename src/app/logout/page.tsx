@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { redirect } from "next/navigation";
 
 export default function LogoutPage() {
   const { logout } = useAuth();

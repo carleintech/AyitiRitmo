@@ -6,10 +6,10 @@ import Particles from "react-tsparticles";
 import type { Engine } from "tsparticles-engine";
 
 interface ParticleBackgroundProps {
-  isPlaying: boolean;
+  isPlaying?: boolean;
 }
 
-export default function ParticleBackground({ isPlaying }: ParticleBackgroundProps) {
+export default function ParticleBackground({ isPlaying = false }: ParticleBackgroundProps) {
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadFull(engine);
   }, []);
@@ -20,87 +20,84 @@ export default function ParticleBackground({ isPlaying }: ParticleBackgroundProp
       init={particlesInit}
       options={{
         fullScreen: {
-          enable: false,
+          enable: true,
           zIndex: 0
+        },
+        background: {
+          color: {
+            value: "transparent",
+          },
         },
         fpsLimit: 120,
         particles: {
+          color: {
+            value: ["#ffffff", "#D21034", "#00209F", "#FFC72C"],
+          },
+          links: {
+            color: "#ffffff",
+            distance: 150,
+            enable: true,
+            opacity: 0.2,
+            width: 1,
+          },
+          move: {
+            direction: "none",
+            enable: true,
+            outModes: {
+              default: "bounce",
+            },
+            random: true,
+            speed: isPlaying ? 2 : 0.8,
+            straight: false,
+          },
           number: {
-            value: isPlaying ? 80 : 50,
             density: {
               enable: true,
-              value_area: 800
-            }
-          },
-          color: {
-            value: ["#ffffff", "#FFC72C", "#D21034", "#00209F"],
-          },
-          shape: {
-            type: "circle",
+              area: 800,
+            },
+            value: 80,
           },
           opacity: {
-            value: { min: 0.1, max: 0.5 },
+            value: 0.3,
             animation: {
               enable: true,
               speed: 1,
               minimumValue: 0.1,
-              sync: false
             }
+          },
+          shape: {
+            type: "circle",
           },
           size: {
-            value: { min: 1, max: 5 },
-            animation: {
-              enable: true,
-              speed: 2,
-              minimumValue: 0.1,
-              sync: false
-            }
+            value: { min: 1, max: 3 },
           },
-          move: {
-            enable: true,
-            speed: isPlaying ? 2 : 1,
-            direction: "none",
-            random: true,
-            straight: false,
-            outModes: {
-              default: "out"
-            },
-            attract: {
-              enable: false,
-              rotateX: 600,
-              rotateY: 1200
-            }
-          }
         },
+        detectRetina: true,
         interactivity: {
-          detectsOn: "canvas",
           events: {
             onHover: {
               enable: true,
-              mode: "connect"
+              mode: "grab",
             },
             onClick: {
               enable: true,
-              mode: "push"
+              mode: "push",
             },
-            resize: true
           },
           modes: {
-            connect: {
-              distance: 150,
+            grab: {
+              distance: 140,
               links: {
-                opacity: 0.3
-              },
-              radius: 100
+                opacity: 0.5
+              }
             },
             push: {
-              quantity: 4
+              quantity: 4,
             },
-          }
+          },
         },
-        detectRetina: true,
       }}
-      className="absolute inset-0 w-full h-full"
+      className="absolute inset-0"
     />
   );
 }

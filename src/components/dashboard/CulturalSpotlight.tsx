@@ -19,7 +19,7 @@ export default function CulturalSpotlight() {
           <div>
             <h3 className="text-haiti-gold text-xl font-bold mb-3">The Roots of Rasin Music</h3>
             <p className="text-white/90 mb-4">
-              Rasin music (literally "roots" in Haitian Creole) emerged in the late 1970s as a musical movement 
+              Rasin music (literally &quot;roots&quot; in Haitian Creole) emerged in the late 1970s as a musical movement 
               that sought to reclaim traditional Haitian rhythms and blend them with modern sounds. Deeply 
               connected to Vodou ceremonial music, Rasin represents the spiritual essence of Haitian culture.
             </p>

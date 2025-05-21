@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Clock, Heart, MoreHorizontal, Play } from "lucide-react";
-import Image from "next/image";
 
 // Sample data for the user's library
 const libraryData = {
@@ -224,7 +223,7 @@ interface PlaylistCardProps {
   image: string;
 }
 
-function PlaylistCard({ name, songs, image }: PlaylistCardProps) {
+function PlaylistCard({ name, songs, image: _image }: PlaylistCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -263,7 +262,7 @@ interface AlbumCardProps {
   image: string;
 }
 
-function AlbumCard({ name, artist, year, image }: AlbumCardProps) {
+function AlbumCard({ name, artist, year, image: _image }: AlbumCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   return (

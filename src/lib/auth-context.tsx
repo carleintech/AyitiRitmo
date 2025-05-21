@@ -2,11 +2,19 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { authApi } from "./api";
 
 interface User {
+  id?: string;
   email: string;
   name: string;
   isArtist: boolean;
+}
+
+// Define the expected shape of the API response
+interface AuthResponse {
+  user: User;
+  token: string;
 }
 
 interface AuthContextType {
@@ -28,7 +36,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check if the user is already logged in
     const storedUser = localStorage.getItem("ayitiritmo_user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse stored user:", error);
+        localStorage.removeItem("ayitiritmo_user"); // Clear invalid data
+      }
     }
     setIsLoading(false);
   }, []);
@@ -36,22 +49,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // For demo purposes, just create a mock user
-      const mockUser: User = {
-        email,
-        name: email.split("@")[0],
-        isArtist: false
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem("ayitiritmo_user", JSON.stringify(mockUser));
+      // Assert the type of the response
+      const response = await authApi.login(email, password) as AuthResponse;
+      setUser(response.user);
+      localStorage.setItem("ayitiritmo_token", response.token);
+      localStorage.setItem("ayitiritmo_user", JSON.stringify(response.user));
       router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
-      throw error;
+      throw error; // Re-throw to allow UI to handle it
     } finally {
       setIsLoading(false);
     }
@@ -60,30 +66,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (name: string, email: string, password: string, isArtist: boolean) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Assert the type of the response
+      const response = await authApi.signup(name, email, password, isArtist) as AuthResponse;
+      setUser(response.user);
+      localStorage.setItem("ayitiritmo_token", response.token);
+      localStorage.setItem("ayitiritmo_user", JSON.stringify(response.user));
       
-      const newUser: User = {
-        email,
-        name,
-        isArtist
-      };
-      
-      setUser(newUser);
-      localStorage.setItem("ayitiritmo_user", JSON.stringify(newUser));
-      router.push("/dashboard");
+      // Redirect artists to artist portal, regular users to dashboard
+      if (isArtist) {
+        router.push("/artist-portal");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.error("Signup error:", error);
-      throw error;
+      throw error; // Re-throw to allow UI to handle it
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("ayitiritmo_user");
-    router.push("/welcome");
+  const logout = async () => {
+    // No need for setIsLoading(true) for logout unless there's a significant delay
+    try {
+      await authApi.logout(); // Assuming authApi.logout might be async
+      setUser(null);
+      localStorage.removeItem("ayitiritmo_token");
+      localStorage.removeItem("ayitiritmo_user");
+      router.push("/welcome"); // Redirect to welcome or login page
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Optionally, handle logout errors (e.g., notify user)
+    }
+    // No finally setIsLoading(false) needed if not set to true initially
   };
 
   return (

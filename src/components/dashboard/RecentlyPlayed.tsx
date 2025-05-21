@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { Play, MoreHorizontal } from "lucide-react";
+import { Play } from "lucide-react";
 
 // Sample data for recently played
 const recentlyPlayedItems = [
@@ -43,7 +42,7 @@ interface SongCardProps {
   image: string;
 }
 
-function SongCard({ title, artist, image }: SongCardProps) {
+function SongCard({ title, artist, image: _image }: SongCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   return (

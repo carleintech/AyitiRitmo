@@ -28,7 +28,7 @@ export default function AuthenticationForm({ mode, setCurrentView }: Authenticat
       } else {
         await signup(name, email, password, isArtist);
       }
-    } catch (err) {
+    } catch {
       setError('Authentication failed. Please try again.');
     }
   };
